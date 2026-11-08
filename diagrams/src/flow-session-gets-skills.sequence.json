@@ -1,0 +1,187 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "A session gets its skills",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "output": "diagrams/flow-session-gets-skills.html"
+  },
+  "participants": [
+    {
+      "id": "person",
+      "type": "external",
+      "label": "A person",
+      "sublabel": "on any machine"
+    },
+    {
+      "id": "claude",
+      "type": "frontend",
+      "label": "Claude Code",
+      "sublabel": "CLI or web"
+    },
+    {
+      "id": "repo",
+      "type": "database",
+      "label": "This repository",
+      "sublabel": ".claude/settings.json"
+    },
+    {
+      "id": "catalogue",
+      "type": "cloud",
+      "label": "Catalogue",
+      "sublabel": "marketplace.json"
+    },
+    {
+      "id": "home",
+      "type": "cloud",
+      "label": "Skill's home",
+      "sublabel": "plugin/ on main"
+    },
+    {
+      "id": "cache",
+      "type": "database",
+      "label": "Plugin cache",
+      "sublabel": "by version"
+    }
+  ],
+  "segments": [
+    {
+      "from": 140,
+      "to": 280,
+      "label": "What this repo needs"
+    },
+    {
+      "from": 290,
+      "to": 440,
+      "label": "Install by pointer"
+    },
+    {
+      "from": 450,
+      "to": 680,
+      "label": "Use, when a task matches"
+    }
+  ],
+  "messages": [
+    {
+      "id": "start",
+      "from": "person",
+      "to": "claude",
+      "y": 160,
+      "label": "start in the repo",
+      "variant": "emphasis"
+    },
+    {
+      "id": "read-settings",
+      "from": "claude",
+      "to": "repo",
+      "y": 190,
+      "label": "read settings"
+    },
+    {
+      "id": "enabled",
+      "from": "repo",
+      "to": "claude",
+      "y": 220,
+      "label": "marketplace + enabledPlugins",
+      "variant": "return",
+      "note": "Committed, so a clone, a web session and a collaborator all get the same list."
+    },
+    {
+      "id": "fetch-catalogue",
+      "from": "claude",
+      "to": "catalogue",
+      "y": 310,
+      "label": "fetch catalogue"
+    },
+    {
+      "id": "pointer",
+      "from": "catalogue",
+      "to": "claude",
+      "y": 338,
+      "label": "git-subdir pointer",
+      "variant": "return"
+    },
+    {
+      "id": "fetch-plugin",
+      "from": "claude",
+      "to": "home",
+      "y": 368,
+      "label": "fetch plugin/",
+      "variant": "emphasis"
+    },
+    {
+      "id": "plugin",
+      "from": "home",
+      "to": "claude",
+      "y": 396,
+      "label": "plugin.json + skills",
+      "variant": "return"
+    },
+    {
+      "id": "store",
+      "from": "claude",
+      "to": "cache",
+      "y": 424,
+      "label": "keep by version",
+      "variant": "dashed"
+    },
+    {
+      "id": "task",
+      "from": "person",
+      "to": "claude",
+      "y": 480,
+      "label": "a task",
+      "note": "Only each skill's name and description are in context; a description that matches the task triggers the skill."
+    },
+    {
+      "id": "read-skill",
+      "from": "claude",
+      "to": "cache",
+      "y": 590,
+      "label": "read SKILL.md"
+    },
+    {
+      "id": "skill",
+      "from": "cache",
+      "to": "claude",
+      "y": 618,
+      "label": "instructions",
+      "variant": "return"
+    },
+    {
+      "id": "result",
+      "from": "claude",
+      "to": "person",
+      "y": 650,
+      "label": "work done the house way",
+      "variant": "return"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Declared, not copied",
+      "items": [
+        "The repository names what it needs; it holds no copy of any skill",
+        "Every place a session starts sees the same list"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Fetched from the home",
+      "items": [
+        "The catalogue answers with a pointer; the plugin comes from its own repository's main",
+        "A new version in plugin.json is what makes a machine fetch again"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Progressive disclosure",
+      "items": [
+        "Names and descriptions load at start; the full SKILL.md only when a task calls for it",
+        "So forty skills cost little until one is used"
+      ]
+    }
+  ]
+}

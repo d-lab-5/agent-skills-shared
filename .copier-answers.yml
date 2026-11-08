@@ -1,0 +1,15 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: 727bd2d
+_src_path: gh:d-lab-5/template-dlab5-shared
+app_repos: d-lab-5/agent-skills
+description: 'How D-LAB-5 shares agent skills across repositories, domains, teams
+    and agents: one home per skill, a catalogue of pointers, and a gate that keeps
+    it honest.'
+diagram_groups: Overview, Flows, Models
+domain: d-lab-5
+languages: en
+ontology: false
+own_domain: ''
+product: Concurrent Agent Skills
+repo: d-lab-5/agent-skills-shared
+slug: agent-skills

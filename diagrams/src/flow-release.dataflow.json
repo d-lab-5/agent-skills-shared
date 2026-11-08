@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "diagram_type": "dataflow",
+  "meta": {
+    "title": "One source, every agent's format",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "output": "diagrams/flow-release.html"
+  },
+  "stages": [
+    { "label": "Source" },
+    { "label": "Gather" },
+    { "label": "Build" },
+    { "label": "Release" },
+    { "label": "Load" }
+  ],
+  "nodes": [
+    { "id": "local", "type": "backend", "label": "dlab5-house", "sublabel": "local plugin", "stage": 0, "row": 0 },
+    { "id": "homes", "type": "external", "label": "Skill homes", "sublabel": "pointer plugins", "stage": 0, "row": 2 },
+    { "id": "gate", "type": "security", "label": "check.mjs", "sublabel": "--remote", "stage": 1, "row": 1, "tag": "on tag v*" },
+    { "id": "build", "type": "backend", "label": "build-dist.mjs", "sublabel": "every SKILL.md", "stage": 2, "row": 1 },
+    { "id": "zips", "type": "database", "label": "claude-ai/*.zip", "sublabel": "one per skill", "stage": 3, "row": 0 },
+    { "id": "layout", "type": "database", "label": "agents/skills", "sublabel": "open layout", "stage": 3, "row": 1 },
+    { "id": "manifest", "type": "database", "label": "manifest.json", "sublabel": "sha256, commit", "stage": 3, "row": 2 },
+    { "id": "claudeai", "type": "cloud", "label": "claude.ai", "sublabel": "org skills", "stage": 4, "row": 0 },
+    { "id": "others", "type": "external", "label": "Other agents", "sublabel": ".agents/skills", "stage": 4, "row": 1 },
+    { "id": "hosted", "type": "cloud", "label": "Hosted agent", "sublabel": "pins a release", "stage": 4, "row": 2 }
+  ],
+  "flows": [
+    { "id": "local-gate", "from": "local", "to": "gate", "label": "plugin folder" },
+    { "id": "homes-gate", "from": "homes", "to": "gate", "label": "sparse fetch" },
+    { "id": "gate-build", "from": "gate", "to": "build", "label": "passed", "variant": "emphasis" },
+    { "id": "build-zips", "from": "build", "to": "zips", "label": "zip each" },
+    { "id": "build-layout", "from": "build", "to": "layout", "label": "copy folders", "variant": "emphasis" },
+    { "id": "build-manifest", "from": "build", "to": "manifest", "label": "hash each", "variant": "security" },
+    { "id": "zips-claudeai", "from": "zips", "to": "claudeai", "label": "upload by hand", "variant": "dashed" },
+    { "id": "layout-others", "from": "layout", "to": "others", "label": "skills add" },
+    { "id": "manifest-hosted", "from": "manifest", "to": "hosted", "label": "verify sha256", "variant": "security" }
+  ],
+  "cards": [
+    { "dot": "emerald", "title": "One source", "items": ["Every format is built from the same SKILL.md files the plugins carry", "Pointer plugins are fetched from their homes for the build"] },
+    { "dot": "cyan", "title": "What a release holds", "items": ["dist/claude-ai: a zip per skill, its folder at the zip's root", "dist/agents/skills: the open layout Codex, Cursor and others read", "dist/manifest.json: name, plugin, version, sha256 and source commit"] },
+    { "dot": "rose", "title": "Pinned, never latest", "items": ["A hosted agent fetches one release at build time and checks each skill's sha256 against the manifest", "Hashes, not signatures: they prove the files are the released ones"] }
+  ]
+}

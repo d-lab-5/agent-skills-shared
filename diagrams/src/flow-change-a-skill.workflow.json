@@ -1,0 +1,195 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Changing a skill",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "output": "diagrams/flow-change-a-skill.html"
+  },
+  "lanes": [
+    {
+      "id": "home",
+      "label": "The skill's home"
+    },
+    {
+      "id": "review",
+      "label": "Review"
+    },
+    {
+      "id": "refused",
+      "label": "Refused",
+      "variant": "exception"
+    },
+    {
+      "id": "sessions",
+      "label": "Machines and sessions"
+    }
+  ],
+  "phases": [
+    {
+      "id": "write",
+      "label": "Write",
+      "fromCol": 0,
+      "toCol": 1
+    },
+    {
+      "id": "check",
+      "label": "Check + merge",
+      "fromCol": 2,
+      "toCol": 3,
+      "variant": "emphasis"
+    },
+    {
+      "id": "use",
+      "label": "Use",
+      "fromCol": 4,
+      "toCol": 5,
+      "variant": "dashed"
+    }
+  ],
+  "mainPath": [
+    "edit",
+    "pr",
+    "gate",
+    "merge",
+    "update",
+    "load"
+  ],
+  "nodes": [
+    {
+      "id": "edit",
+      "lane": "home",
+      "col": 0,
+      "type": "external",
+      "label": "Edit and bump",
+      "sublabel": "SKILL.md, plugin.json"
+    },
+    {
+      "id": "pr",
+      "lane": "home",
+      "col": 1,
+      "type": "backend",
+      "label": "Pull request",
+      "sublabel": "to stage"
+    },
+    {
+      "id": "gate",
+      "lane": "review",
+      "col": 2,
+      "type": "security",
+      "label": "check.mjs",
+      "sublabel": "sweep, bump, links",
+      "tag": "in CI"
+    },
+    {
+      "id": "merge",
+      "lane": "review",
+      "col": 3,
+      "type": "frontend",
+      "label": "Merge to main",
+      "sublabel": "a person merges"
+    },
+    {
+      "id": "refused",
+      "lane": "refused",
+      "col": 3,
+      "type": "security",
+      "label": "Refused",
+      "sublabel": "names file and line"
+    },
+    {
+      "id": "update",
+      "lane": "sessions",
+      "col": 4,
+      "type": "messagebus",
+      "label": "Marketplace update",
+      "sublabel": "new version seen"
+    },
+    {
+      "id": "load",
+      "lane": "sessions",
+      "col": 5,
+      "type": "frontend",
+      "label": "Next session",
+      "sublabel": "loads the new skill"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edit-pr",
+      "from": "edit",
+      "to": "pr",
+      "label": "push"
+    },
+    {
+      "id": "pr-gate",
+      "from": "pr",
+      "to": "gate",
+      "label": "runs",
+      "variant": "emphasis"
+    },
+    {
+      "id": "gate-merge",
+      "from": "gate",
+      "to": "merge",
+      "label": "passes",
+      "variant": "emphasis"
+    },
+    {
+      "id": "gate-refused",
+      "from": "gate",
+      "to": "refused",
+      "label": "a fault",
+      "variant": "security",
+      "role": "error"
+    },
+    {
+      "id": "refused-edit",
+      "from": "refused",
+      "to": "edit",
+      "label": "fix and push",
+      "variant": "dashed",
+      "role": "return"
+    },
+    {
+      "id": "merge-update",
+      "from": "merge",
+      "to": "update",
+      "label": "main",
+      "variant": "emphasis"
+    },
+    {
+      "id": "update-load",
+      "from": "update",
+      "to": "load"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Where the change happens",
+      "items": [
+        "In the repository that owns the subject, in the same pull request as the code it describes",
+        "The catalogue changes only when a plugin is added or moved"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "What the gate refuses",
+      "items": [
+        "A symlink, an account id, a key, an email, a local path or a word on the deny list",
+        "A changed plugin whose version did not move: an installed copy would never update",
+        "A pointer that reaches no plugin.json"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Why the version matters",
+      "items": [
+        "Claude Code caches a plugin by its version",
+        "Without a bump every machine keeps the old skill, silently"
+      ]
+    }
+  ]
+}

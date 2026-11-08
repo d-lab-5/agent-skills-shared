@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "One home per skill, many agents",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "output": "diagrams/overview-one-home.html",
+    "views": [
+      { "id": "home", "label": "Write it at home", "focus": ["home", "gate", "catalogue", "house"], "note": "A skill lives in the repository that owns its subject. The catalogue holds a pointer to it, checked on every pull request." },
+      { "id": "session", "label": "A session gets its skills", "focus": ["catalogue", "settings", "session"], "note": "A repository's committed settings name the plugins it needs, so every session there loads the same ones, on any machine." },
+      { "id": "release", "label": "One source, other formats", "focus": ["catalogue", "dist", "claudeai", "agents", "hosted"], "note": "A tagged release builds zips for claude.ai, the open .agents/skills layout, and a manifest of sha256 hashes." }
+    ]
+  },
+  "components": [
+    { "id": "home", "type": "external", "label": "Skill homes", "sublabel": "plugin/ in its own repo", "pos": [40, 200], "size": [150, 64], "tag": "templates, domains, tools" },
+    { "id": "gate", "type": "security", "label": "check.mjs", "sublabel": "the gate, in CI", "pos": [290, 200], "size": [150, 64], "tag": "sweep, bump, pointers" },
+    { "id": "catalogue", "type": "backend", "label": "marketplace.json", "sublabel": "the d-lab-5 catalogue", "pos": [540, 200], "size": [150, 64], "tag": "pointers, not copies" },
+    { "id": "house", "type": "backend", "label": "dlab5-house", "sublabel": "house skills, kept here", "pos": [540, 40], "size": [150, 64] },
+    { "id": "settings", "type": "frontend", "label": ".claude/settings.json", "sublabel": "committed in each repo", "pos": [790, 200], "size": [150, 64] },
+    { "id": "session", "type": "frontend", "label": "Claude Code", "sublabel": "this PC, web, collaborators", "pos": [1040, 200], "size": [150, 64] },
+    { "id": "dist", "type": "messagebus", "label": "build-dist.mjs", "sublabel": "on a v* release tag", "pos": [540, 360], "size": [150, 64] },
+    { "id": "claudeai", "type": "cloud", "label": "claude.ai", "sublabel": "uploaded by hand", "pos": [290, 520], "size": [150, 64] },
+    { "id": "agents", "type": "external", "label": "Codex, Cursor, …", "sublabel": ".agents/skills", "pos": [540, 520], "size": [150, 64] },
+    { "id": "hosted", "type": "cloud", "label": "Hosted agents", "sublabel": "pin one release", "pos": [790, 520], "size": [150, 64] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "d-lab-5/agent-skills (public)", "wraps": ["gate", "catalogue", "house", "dist"] }
+  ],
+  "connections": [
+    { "id": "home-pr", "from": "home", "to": "gate", "label": "every PR", "variant": "emphasis" },
+    { "id": "gate-catalogue", "from": "gate", "to": "catalogue", "label": "pointer", "variant": "security" },
+    { "id": "house-local", "from": "house", "to": "catalogue", "label": "local plugin", "fromSide": "bottom", "toSide": "top" },
+    { "id": "catalogue-settings", "from": "catalogue", "to": "settings", "label": "enables", "variant": "emphasis" },
+    { "id": "settings-session", "from": "settings", "to": "session", "label": "loads", "variant": "emphasis" },
+    { "id": "catalogue-dist", "from": "catalogue", "to": "dist", "label": "release", "variant": "dashed", "fromSide": "bottom", "toSide": "top" },
+    { "id": "dist-claudeai", "from": "dist", "to": "claudeai", "label": "one zip a skill", "variant": "dashed", "fromSide": "bottom", "toSide": "top" },
+    { "id": "dist-agents", "from": "dist", "to": "agents", "label": "skills layout", "variant": "dashed", "fromSide": "bottom", "toSide": "top" },
+    { "id": "dist-hosted", "from": "dist", "to": "hosted", "label": "manifest + sha256", "variant": "security", "fromSide": "bottom", "toSide": "top" }
+  ],
+  "cards": [
+    { "dot": "emerald", "title": "One home", "items": ["A skill lives where its subject is changed: a template's skill in the template, a domain's in the domain's repo", "The catalogue lists it by git-subdir pointer and never copies it", "House skills that belong to no one repo live in plugins/dlab5-house"] },
+    { "dot": "rose", "title": "The gate", "items": ["scripts/check.mjs refuses symlinks, account ids, keys, emails, local paths and a description over 1024 characters", "A changed plugin without a new version is refused", "Every pointer must reach a folder with a plugin.json"] },
+    { "dot": "cyan", "title": "Many agents at once", "items": ["A repo's .claude/settings.json names the marketplace and the plugins it needs", "A web session or a collaborator's clone loads the same skills as this PC", "Third-party skills stay pinned by skills-lock.json, never forked"] }
+  ]
+}

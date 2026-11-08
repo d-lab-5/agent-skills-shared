@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "diagram_type": "class",
+  "meta": {
+    "title": "The files that hold it together",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "output": "diagrams/model-catalogue.html"
+  },
+  "layout": { "mode": "grid" },
+  "types": [
+    {
+      "id": "settings", "label": ".claude/settings.json", "kind": "record", "sublabel": "In each repository, committed", "row": 0, "col": 0,
+      "attributes": [
+        { "name": "extraKnownMarketplaces", "type": "d-lab-5 → github repo" },
+        { "name": "enabledPlugins", "type": "name@d-lab-5: true" }
+      ]
+    },
+    {
+      "id": "marketplace", "label": "marketplace.json", "kind": "record", "sublabel": "The catalogue, d-lab-5/agent-skills", "row": 0, "col": 1,
+      "attributes": [
+        { "name": "name", "type": "\"d-lab-5\"" },
+        { "name": "plugins", "type": "PluginEntry[]" }
+      ]
+    },
+    {
+      "id": "entry", "label": "PluginEntry", "kind": "record", "sublabel": "One line per plugin", "row": 0, "col": 2,
+      "attributes": [
+        { "name": "name", "type": "string" },
+        { "name": "source", "type": "Source" },
+        { "name": "keywords[0]", "type": "its domain" }
+      ]
+    },
+    {
+      "id": "source", "label": "Source", "kind": "interface", "sublabel": "Where the plugin lives", "row": 1, "col": 2
+    },
+    {
+      "id": "local", "label": "Local path", "kind": "record", "sublabel": "./plugins/<name>, in the catalogue", "row": 2, "col": 1,
+      "attributes": [ { "name": "source", "type": "\"./plugins/dlab5-house\"" } ]
+    },
+    {
+      "id": "pointer", "label": "git-subdir pointer", "kind": "record", "sublabel": "A folder in the skill's home", "row": 2, "col": 2,
+      "attributes": [
+        { "name": "url", "type": "github repo .git" },
+        { "name": "path", "type": "\"plugin\"" }
+      ]
+    },
+    {
+      "id": "plugin", "label": "plugin.json", "kind": "record", "sublabel": "The box: name, version, licence", "row": 1, "col": 0,
+      "attributes": [
+        { "name": "name", "type": "string" },
+        { "name": "version", "type": "semver" },
+        { "name": "license", "type": "SPDX id" }
+      ]
+    },
+    {
+      "id": "skill", "label": "SKILL.md", "kind": "record", "sublabel": "The recipe card", "row": 2, "col": 0,
+      "attributes": [
+        { "name": "name", "type": "= its folder, ≤ 64" },
+        { "name": "description", "type": "the trigger, ≤ 1024" },
+        { "name": "body", "type": "loaded when used" }
+      ]
+    }
+  ],
+  "relationships": [
+    { "id": "settings-names", "from": "settings", "to": "marketplace", "kind": "dependency", "label": "names" },
+    { "id": "marketplace-entries", "from": "marketplace", "to": "entry", "kind": "composition", "label": "lists" },
+    { "id": "entry-source", "from": "entry", "to": "source", "kind": "association", "label": "has" },
+    { "id": "local-is", "from": "local", "to": "source", "kind": "realization" },
+    { "id": "pointer-is", "from": "pointer", "to": "source", "kind": "realization" },
+    { "id": "source-plugin", "from": "source", "to": "plugin", "kind": "dependency", "label": "reaches" },
+    { "id": "plugin-skills", "from": "plugin", "to": "skill", "kind": "composition", "label": "skills/<name>/" }
+  ]
+}
