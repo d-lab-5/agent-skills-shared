@@ -1,5 +1,5 @@
 # Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
-_commit: 727bd2d
+_commit: a934e36
 _src_path: gh:d-lab-5/template-dlab5-shared
 app_repos: d-lab-5/agent-skills
 description: 'How D-LAB-5 shares agent skills across repositories, domains, teams
